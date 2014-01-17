@@ -60,21 +60,17 @@ classifier.fit(trainingFeatures, trainingLabels)
 		
 #print float(count)/100.
 
-# Write result
+# Write results file in the form specified under the competition details
+resultsFile = open('results.csv','w')
 
-resultsFile = open('results.csv','a+')
-resultsFileWriter = csv.writer(resultsFile)
-
-
-id = 0
-#resultsFileWriter.writerow(['Id','Solution'])
-#for sample in testFeatures:
-#	id += 1
-#	solution = classifier.predict(testFeatures[id-1])[0]
-#	resultsFileWriter.writerow([str(id),str(solution)])
-	#resultsFileWriter.writerow([str(solution)])
+count = 0
+resultsFile.write('Id,Solution\n')
+for sample in testFeatures:
+	count += 1
+	solution = classifier.predict(testFeatures[count-1])[0]
+	resultsFile.write('%d,%d\n' % (count,solution))
 	
-solution = classifier.predict(testFeatures)
+#solution = classifier.predict(testFeatures)
 
 
 resultsFile.close()
