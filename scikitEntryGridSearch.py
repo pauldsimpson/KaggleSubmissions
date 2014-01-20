@@ -69,39 +69,43 @@ testFeatures = np.array(testFeatures)
 
 #############################################################################################
 
-# Split the dataset in two equal parts
-trainingFeaturesSplit1, trainingFeaturesSplit2, trainingLabelsSplit1, trainingLabelsSplit2 = train_test_split(
-    trainingFeatures, trainingLabels, test_size=0.1, random_state=0)
+# Split the dataset in a devlopment and evaluation set
+trainingFeaturesDevelopmentSet, trainingEvaluationSet, trainingLabelsDevelopmentSet, trainingLabelsEvaluationSet = train_test_split(
+    trainingFeatures, trainingLabels, test_size=0.5, random_state=0)
 
 # Grid seach parameters, searching over rbf and linear kernel
-C_range = np.arange(1, 150, 1)
+C_range = np.arange(1, 100, 1)
 #g_range = np.arange(1e-3,1e-2,1e-4)
-g_range = [1e-3,2e-3,3e-3,4e-3,5e-3]
+g_range = [0.01,0.02,0.03,0.04,0.05]
 tuned_parameters = [{'kernel': ['rbf'], 'gamma': g_range,
             	        'C': C_range}]
 
 scores = ['accuracy']
 
+#This loop enables us to compare other scoring functions. This competition hoever evaluates
+#using accuracy
 for score in scores:
 
 	print("# Tuning hyper-parameters for %s" % score)
 
-	classifier = GridSearchCV(svm.SVC(C=1), tuned_parameters, cv = 5, scoring = score)
-	classifier.fit(trainingFeaturesSplit1, trainingLabelsSplit1)
+	#Conducts a gridsearch over the defined parameters and selects the parameters that have
+	#the best score based on the scoring paramter
+	classifier = GridSearchCV(svm.SVC(), tuned_parameters, cv = 20, scoring = score)
+	classifier.fit(trainingFeaturesDevelopmentSet, trainingLabelsDevelopmentSet)
 
 	print("Best parameters set found on development set: \n")
-    
 	print(classifier.best_estimator_)
     
+    #Prints the grid scores, as this is stored in the classifier as a variable
 	print("Grid scores on development set:")
-    
 	for params, mean_score, scores in classifier.grid_scores_:
 		print("%0.3f (+/-%0.03f) for %r" % (mean_score, scores.std() / 2, params))
+
 
 	print("Detailed classification report:")
 	print("The model is trained on the full development set.")
 	print("The scores are computed on the full evaluation set.")
-	labels_true, labels_pred = trainingLabelsSplit2, classifier.predict(trainingFeaturesSplit2)
+	labels_true, labels_pred = trainingLabelsEvaluationSet, classifier.predict(trainingFeaturesEvaluationSet)
 	print(classification_report(labels_true, labels_pred))
     
 
