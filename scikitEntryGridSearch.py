@@ -70,7 +70,7 @@ testFeatures = np.array(testFeatures)
 #############################################################################################
 
 # Split the dataset in a devlopment and evaluation set
-trainingFeaturesDevelopmentSet, trainingEvaluationSet, trainingLabelsDevelopmentSet, trainingLabelsEvaluationSet = train_test_split(
+trainingFeaturesDevelopmentSet, trainingFeaturesEvaluationSet, trainingLabelsDevelopmentSet, trainingLabelsEvaluationSet = train_test_split(
     trainingFeatures, trainingLabels, test_size=0.5, random_state=0)
 
 # Grid seach parameters, searching over rbf and linear kernel
